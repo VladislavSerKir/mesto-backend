@@ -1,9 +1,12 @@
 import './env';
-import express, { json } from 'express';
+import express, {
+  NextFunction, Request, Response, json,
+} from 'express';
 import mongoose from 'mongoose';
 import path from 'path';
 
 import router from './routes';
+import { CustomRequest } from './types';
 
 const { PORT = 3000 } = process.env;
 
@@ -12,6 +15,15 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(json());
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const requestCustom = req as CustomRequest;
+  requestCustom.user = {
+    _id: '644022682e1d30a07909beee',
+  };
+
+  next();
+});
 
 app.use(router);
 
